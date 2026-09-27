@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+*.log
+build_log.txt
+package-lock.json
+pnpm-workspace.yaml
+.astro/

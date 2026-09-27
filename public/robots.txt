@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://reference.autional.cn/sitemap-index.xml

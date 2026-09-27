@@ -56,6 +56,17 @@ TITLES = {
 }
 
 
+def rebrand(node):
+    """Upstream descriptions/examples say `AuthMS`; the portals are Autional."""
+    if isinstance(node, str):
+        return node.replace("AuthMS", "Autional")
+    if isinstance(node, list):
+        return [rebrand(v) for v in node]
+    if isinstance(node, dict):
+        return {k: rebrand(v) for k, v in node.items()}
+    return node
+
+
 def main() -> int:
     if not os.path.isdir(SPECS_SRC):
         print(f"ERROR: source not found: {SPECS_SRC}")
@@ -71,7 +82,7 @@ def main() -> int:
             continue
 
         with open(src, encoding="utf-8") as fh:
-            spec = json.load(fh)
+            spec = rebrand(json.load(fh))
 
         spec.setdefault("info", {})["title"] = f"{TITLES[svc]} API"
 

@@ -2103,7 +2103,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "将当前用户的 AuthMS 账号与第三方 OAuth 提供商账号绑定。需 JWT 认证，请求体中的 user_id 必须与 JWT subject 一致。",
+        "description": "将当前用户的 Autional 账号与第三方 OAuth 提供商账号绑定。需 JWT 认证，请求体中的 user_id 必须与 JWT subject 一致。",
         "consumes": [
           "application/json"
         ],
@@ -3325,7 +3325,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "删除指定的 OAuth 连接，解除 AuthMS 用户与第三方 OAuth 提供商的绑定。需 JWT 认证。",
+        "description": "删除指定的 OAuth 连接，解除 Autional 用户与第三方 OAuth 提供商的绑定。需 JWT 认证。",
         "produces": [
           "application/json"
         ],

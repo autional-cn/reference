@@ -86,7 +86,7 @@ const ogImage = new URL('/og-default.png', Astro.site).href;
 </head>
 <body class="min-h-screen flex flex-col text-neutral-900">
   <!-- 顶部栏 -->
-  <header class="sticky top-0 z-50 h-12 flex items-center justify-between px-5 border-b border-primary-100/70 bg-white/90 backdrop-blur-xl">
+  <header class="site-header site-header--translucent h-[var(--layout-header-height)] px-5 justify-between">
     <a href="/" class="flex items-center gap-2.5 no-underline">
       <img src="/logo-mark.svg" alt="Autional" class="h-5 w-5 object-contain">
       <span class="text-sm font-extrabold tracking-[-0.03em] text-primary-900">API 参考</span>

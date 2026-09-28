@@ -999,73 +999,7 @@
     },
     "/communication/callback/{provider}": {
       "post": {
-        "description": "接收并处理各短信、邮件、推送服务商（阿里云、腾讯云、AWS SNS/SES、SendGrid、Mailgun、FCM、APNs、JPush等）的投递状态回调通知，自动更新对应消息的发送状态。回调为公开端点，必须携带 HMAC-SHA256 签名（X-Callback-Signature，hex；密钥见 callback.secret），签名缺失/不符一律 401。参考：ePrivacy Directive 2002/58/EC、CAN-SPAM Act。",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "通信服务"
-        ],
-        "summary": "处理短信/邮件/推送服务商回调",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "服务商名称：aliyun/tencentcloud/aws/sendgrid/ses/mailgun/fcm/apns/jpush",
-            "name": "provider",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "回调体 HMAC-SHA256 签名（hex，密钥 = callback.secret）",
-            "name": "X-Callback-Signature",
-            "in": "header",
-            "required": true
-          },
-          {
-            "description": "回调数据（各服务商格式不同，支持JSON和Form表单）",
-            "name": "request",
-            "in": "body",
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "回调已接收确认",
-            "schema": {
-              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.CallbackResultDetailResponse"
-            }
-          },
-          "400": {
-            "description": "请求数据格式错误",
-            "schema": {
-              "$ref": "#/definitions/dto.SimpleResponse"
-            }
-          },
-          "401": {
-            "description": "回调签名缺失或无效",
-            "schema": {
-              "$ref": "#/definitions/dto.SimpleResponse"
-            }
-          },
-          "404": {
-            "description": "回调指向的消息不存在",
-            "schema": {
-              "$ref": "#/definitions/dto.SimpleResponse"
-            }
-          },
-          "500": {
-            "description": "回调处理内部错误/验签密钥未配置",
-            "schema": {
-              "$ref": "#/definitions/dto.SimpleResponse"
-            }
-          }
-        }
+        "responses": {}
       }
     },
     "/communication/dashboard": {
@@ -2758,6 +2692,111 @@
         }
       }
     },
+    "/internal/email/suppressions": {
+      "get": {
+        "description": "分页列出本租户被抑制的收件人（只返回掩码地址，不含 hash 与明文）",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务 - 内部接口"
+        ],
+        "summary": "内部查询邮件抑制列表",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "页码",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.EmailSuppressionListResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "按邮箱地址解除抑制（服务端归一化+哈希后删除）。幂等：未命中同样返回成功。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务 - 内部接口"
+        ],
+        "summary": "内部解除邮件抑制",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "待解除的邮箱地址",
+            "name": "email",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "解除成功",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.ReleaseEmailSuppressionDetailResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/internal/schedulers": {
       "get": {
         "description": "返回当前服务所有后台调度器的运行状态",
@@ -3107,6 +3146,10 @@
           "type": "string",
           "example": "您的验证码是123456"
         },
+        "purpose": {
+          "type": "string",
+          "example": "sms_verification"
+        },
         "recipients": {
           "type": "array",
           "items": {
@@ -3134,37 +3177,6 @@
           "additionalProperties": {
             "type": "string"
           }
-        }
-      }
-    },
-    "gitee_com_autional_service-communication_internal_handler_dto.CallbackResultDetailResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "data": {
-          "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.CallbackResultResponse"
-        },
-        "message": {
-          "type": "string"
-        },
-        "timestamp": {
-          "type": "string"
-        }
-      }
-    },
-    "gitee_com_autional_service-communication_internal_handler_dto.CallbackResultResponse": {
-      "description": "提供商回调结果",
-      "type": "object",
-      "properties": {
-        "provider": {
-          "type": "string",
-          "example": "aliyun"
-        },
-        "received": {
-          "type": "boolean",
-          "example": true
         }
       }
     },
@@ -3569,6 +3581,11 @@
           "type": "boolean",
           "example": false
         },
+        "list_unsubscribe": {
+          "description": "ListUnsubscribe 退订头开关（WS-D D5）。缺省(nil) = 按 email.subscription_template_codes 配置判定；\ntrue = 显式加 List-Unsubscribe；false = 显式不加。头值来自 email.list_unsubscribe 配置。",
+          "type": "boolean",
+          "example": true
+        },
         "send_at": {
           "type": "string",
           "example": "2026-06-07T10:00:00Z"
@@ -3605,6 +3622,78 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "gitee_com_autional_service-communication_internal_handler_dto.EmailSuppressionListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "items": {
+          "description": "统一使用 items",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.EmailSuppressionResponse"
+          }
+        },
+        "message": {
+          "type": "string"
+        },
+        "pagination": {
+          "description": "分页信息（嵌套对象）",
+          "allOf": [
+            {
+              "$ref": "#/definitions/dto.PageInfo"
+            }
+          ]
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "total": {
+          "description": "总条数（平铺，便于直接读取）",
+          "type": "integer"
+        }
+      }
+    },
+    "gitee_com_autional_service-communication_internal_handler_dto.EmailSuppressionResponse": {
+      "type": "object",
+      "properties": {
+        "bounce_count": {
+          "type": "integer",
+          "example": 3
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2026-09-17T10:00:00Z"
+        },
+        "email_masked": {
+          "type": "string",
+          "example": "u***@example.com"
+        },
+        "expires_at": {
+          "description": "ExpiresAt 保留期到期时间（U3）。空 = 不过期（保留期配置为 0，或本列引入前的历史行）。\n运维需要它来回答「这条抑制为什么会被自动解除」与「历史行何时被回收」。",
+          "type": "string",
+          "example": "2027-03-16T10:00:00Z"
+        },
+        "is_active": {
+          "type": "boolean",
+          "example": true
+        },
+        "last_bounced_at": {
+          "type": "string",
+          "example": "2026-09-17T10:00:00Z"
+        },
+        "provider": {
+          "type": "string",
+          "example": "smtp"
+        },
+        "reason": {
+          "description": "hard_bounce | soft_bounce | complaint",
+          "type": "string",
+          "example": "hard_bounce"
         }
       }
     },
@@ -4311,6 +4400,32 @@
         }
       }
     },
+    "gitee_com_autional_service-communication_internal_handler_dto.ReleaseEmailSuppressionDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.ReleaseEmailSuppressionResponse"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "gitee_com_autional_service-communication_internal_handler_dto.ReleaseEmailSuppressionResponse": {
+      "type": "object",
+      "properties": {
+        "released": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
     "gitee_com_autional_service-communication_internal_handler_dto.RenderedContent": {
       "type": "object",
       "properties": {
@@ -4339,6 +4454,11 @@
           "description": "手机号",
           "type": "string",
           "example": "13800138000"
+        },
+        "purpose": {
+          "description": "Purpose 业务场景（审计/路由/脱敏；可选，向后兼容）。",
+          "type": "string",
+          "example": "sms_verification"
         },
         "send_at": {
           "type": "string",

@@ -1140,6 +1140,65 @@
         }
       }
     },
+    "/internal/mfa/email/send": {
+      "post": {
+        "description": "内部API。按 user_id + email 生成并投递 email MFA 验证码，供 identity 登录期调用。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "多因素认证 - 内部接口"
+        ],
+        "summary": "内部：发送登录期 MFA 邮箱验证码",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "发送请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-mfa_internal_handler_dto.InternalEmailSendRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "发送成功",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-mfa_internal_handler_dto.EmailSendDetailResponse"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未提供有效的X-API-Key",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/internal/mfa/erase": {
       "post": {
         "description": "内部API：硬删除指定用户的所有MFA配置、TOTP设备和受信设备，用于GDPR删除Saga。需要InternalAPIKey认证。",
@@ -1250,6 +1309,65 @@
           },
           "404": {
             "description": "挑战未找到",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/internal/mfa/sms/send": {
+      "post": {
+        "description": "内部API。按 user_id 解析其已登记的 SMS MFA 设备并投递短信验证码，供 identity 登录期调用。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "多因素认证 - 内部接口"
+        ],
+        "summary": "内部：发送登录期 MFA 短信验证码",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "发送请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-mfa_internal_handler_dto.InternalSMSSendRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "发送成功",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-mfa_internal_handler_dto.SMSSendDetailResponse"
+            }
+          },
+          "400": {
+            "description": "参数错误 / 未登记短信 MFA",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未提供有效的X-API-Key",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
@@ -4877,6 +4995,24 @@
         }
       }
     },
+    "gitee_com_autional_service-mfa_internal_handler_dto.InternalEmailSendRequest": {
+      "type": "object",
+      "required": [
+        "email",
+        "user_id"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        }
+      }
+    },
     "gitee_com_autional_service-mfa_internal_handler_dto.InternalEraseMFARequest": {
       "type": "object",
       "required": [
@@ -4920,6 +5056,20 @@
         },
         "totp": {
           "$ref": "#/definitions/gitee_com_autional_service-mfa_internal_handler_dto.MFAMethodStatus"
+        }
+      }
+    },
+    "gitee_com_autional_service-mfa_internal_handler_dto.InternalSMSSendRequest": {
+      "type": "object",
+      "required": [
+        "user_id"
+      ],
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
         }
       }
     },

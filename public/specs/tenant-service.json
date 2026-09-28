@@ -1723,7 +1723,7 @@
         }
       }
     },
-    "/admin/tenants/{tenant_id}/applications/{app_id}/members/{role_id}": {
+    "/admin/tenants/{tenant_id}/applications/{app_id}/members/{user_id}": {
       "put": {
         "security": [
           {
@@ -1758,8 +1758,8 @@
           },
           {
             "type": "string",
-            "description": "角色分配ID",
-            "name": "role_id",
+            "description": "用户ID",
+            "name": "user_id",
             "in": "path",
             "required": true
           },
@@ -1846,8 +1846,8 @@
           },
           {
             "type": "string",
-            "description": "角色分配ID",
-            "name": "role_id",
+            "description": "用户ID",
+            "name": "user_id",
             "in": "path",
             "required": true
           }

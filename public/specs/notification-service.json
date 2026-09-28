@@ -1509,6 +1509,65 @@
         }
       }
     },
+    "/internal/notification/event-mappings": {
+      "post": {
+        "description": "内部 API：以 (tenant_id, app_id, event_type, channel) 为唯一键幂等 upsert 映射，\n供 seed/运维脚本收敛\"某事件应使用哪个模板\"。受 InternalAPIKeyMulti 保护。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通知服务 - 内部接口"
+        ],
+        "summary": "内部种入事件→模板映射",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "映射种入请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.InternalUpsertEventMappingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "写入成功",
+            "schema": {
+              "$ref": "#/definitions/dto.DataResponse-gitee_com_autional_service-notification_internal_handler_dto_EventMappingResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未提供有效的X-API-Key",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/internal/notification/export-user-data": {
       "post": {
         "description": "按租户和用户ID导出所有通知记录和偏好设置（GDPR合规数据导出） 参考：CAN-SPAM Act (15 U.S.C. §7701) — Commercial Email Compliance。",
@@ -1738,6 +1797,71 @@
           },
           "401": {
             "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/internal/notification/send-external": {
+      "post": {
+        "description": "内部 API：按模板 code 渲染后投递 email/sms（不创建站内通知）。\n供无用户上下文的路径使用：Trust Center 订阅确认/退订、状态页订阅双确认（A5/A6）。\n受 InternalAPIKeyMulti + X-Tenant-ID 保护；locale 缺省 zh-CN。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通知服务 - 内部接口"
+        ],
+        "summary": "内部模板化外部投递",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "X-Tenant-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "外部投递请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.InternalSendExternalRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "已入队",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未提供有效的X-API-Key",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "模板未找到或未启用",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
@@ -3926,6 +4050,23 @@
     }
   },
   "definitions": {
+    "dto.DataResponse-gitee_com_autional_service-notification_internal_handler_dto_EventMappingResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.EventMappingResponse"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
     "dto.DataResponse-gitee_com_autional_service-notification_internal_handler_dto_ExportUserDataResponse": {
       "type": "object",
       "properties": {
@@ -4968,6 +5109,69 @@
         "user_id": {
           "type": "string",
           "example": "user-001"
+        }
+      }
+    },
+    "gitee_com_autional_service-notification_internal_handler_dto.InternalSendExternalRequest": {
+      "type": "object",
+      "required": [
+        "channel",
+        "recipient",
+        "template_code"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "example": "email"
+        },
+        "locale": {
+          "type": "string",
+          "example": "en-US"
+        },
+        "recipient": {
+          "type": "string",
+          "example": "user@example.com"
+        },
+        "template_code": {
+          "type": "string",
+          "example": "status_subscription_confirm"
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "gitee_com_autional_service-notification_internal_handler_dto.InternalUpsertEventMappingRequest": {
+      "type": "object",
+      "required": [
+        "event_type",
+        "template_code"
+      ],
+      "properties": {
+        "channel": {
+          "description": "空 → in_app",
+          "type": "string",
+          "example": "in_app"
+        },
+        "event_type": {
+          "type": "string",
+          "example": "user.registered"
+        },
+        "is_enabled": {
+          "description": "空 → true",
+          "type": "boolean"
+        },
+        "priority": {
+          "description": "空 → medium",
+          "type": "string",
+          "example": "medium"
+        },
+        "template_code": {
+          "type": "string",
+          "example": "welcome"
         }
       }
     },

@@ -10538,12 +10538,6 @@
     "/iots/{iot_id}": {
       "delete": {
         "description": "取消配对指定的 Non-Human Identity (NHI) IoT Device",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
         "tags": [
           "IoTs"
         ],
@@ -10673,7 +10667,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "移除家庭共享成员（删除该成员在设备下的全部 role 元组）。无元组 → 404 family_member_not_found。",
+        "description": "移除指定家庭成员（删除该成员在设备下的全部 role 元组）。无元组 → 404 family_member_not_found。",
         "consumes": [
           "application/json"
         ],
@@ -10719,12 +10713,6 @@
     "/iots/{iot_id}/transfer": {
       "post": {
         "description": "将指定的 Non-Human Identity (NHI) IoT Device 转移给新的所有者",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
         "tags": [
           "IoTs"
         ],

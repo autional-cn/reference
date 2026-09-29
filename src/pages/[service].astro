@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import RefLayout from '../layouts/RefLayout.astro';
 
 export async function getStaticPaths() {
-  const svcs = ["identity-service","profile-service","tenant-service","session-service","mfa-service","oauth-service","wallet-service","point-service","audit-service","notification-service","communication-service","storage-service","billing-service","compliance-service","status-service","secret-service","saml-service","pay-service","thirdparty-service","verification-service","rbac-service","gateway-service"];
+  const svcs = ["identity-service","profile-service","tenant-service","session-service","mfa-service","oauth-service","wallet-service","point-service","audit-service","notification-service","communication-service","storage-service","billing-service","compliance-service","status-service","secret-service","saml-service","pay-service","thirdparty-service","verification-service","rbac-service","gateway-service","hash-service-standard","hash-service-sm","captcha3d-service","config-service"];
   return svcs.map(n => ({ params: { service: n } }));
 }
 

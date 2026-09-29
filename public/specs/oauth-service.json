@@ -2064,9 +2064,9 @@
         ],
         "responses": {
           "200": {
-            "description": "授权码（无 redirect_uri 时）",
+            "description": "提供 redirect_uri 且 Accept: application/json 时：{redirect_to} 重定向目标（供同意页 fetch 提交读取）；无 redirect_uri 时为 {code} 授权码 JSON",
             "schema": {
-              "$ref": "#/definitions/handler.authorizeCodeResponse"
+              "$ref": "#/definitions/handler.authorizeRedirectResponse"
             }
           },
           "302": {
@@ -2081,8 +2081,14 @@
               "$ref": "#/definitions/gitee_com_autional_service-oauth_internal_handler_dto.OAuthErrorResponse"
             }
           },
+          "401": {
+            "description": "login_required：公开客户端同意提交必须绑定有效会话（无会话不可发码）",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-oauth_internal_handler_dto.OAuthErrorResponse"
+            }
+          },
           "403": {
-            "description": "access_denied：user_id 与认证用户不匹配",
+            "description": "access_denied：user_id/tenant_id 与认证会话不匹配（公开客户端以会话为准）",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-oauth_internal_handler_dto.OAuthErrorResponse"
             }
@@ -5978,6 +5984,14 @@
           "type": "string"
         },
         "state": {
+          "type": "string"
+        }
+      }
+    },
+    "handler.authorizeRedirectResponse": {
+      "type": "object",
+      "properties": {
+        "redirect_to": {
           "type": "string"
         }
       }

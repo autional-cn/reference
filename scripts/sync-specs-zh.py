@@ -27,6 +27,7 @@ SERVICES = [
     "storage-service", "billing-service", "compliance-service", "status-service",
     "secret-service", "saml-service", "pay-service", "thirdparty-service",
     "verification-service", "rbac-service", "gateway-service",
+    "hash-service-standard", "hash-service-sm", "captcha3d-service", "config-service",
 ]
 
 # Display names used across the .cn portals (nav, page titles, spec titles).
@@ -53,6 +54,10 @@ TITLES = {
     "verification-service": "身份验证服务",
     "rbac-service": "RBAC 服务",
     "gateway-service": "网关服务",
+    "hash-service-standard": "密码哈希服务",
+    "hash-service-sm": "国密哈希服务",
+    "captcha3d-service": "3D 验证码服务",
+    "config-service": "配置中心服务",
 }
 
 

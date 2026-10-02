@@ -69,6 +69,86 @@
         }
       }
     },
+    "/admin/payments": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /payments 同体、同租户范围；供控制台在 admin 平面读取。参考：PCI DSS v4.0 Req 3.3 (Mask PAN)、PCI DSS v4.0 Req 4 (Encrypt Transmission)。",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "支付服务"
+        ],
+        "summary": "查询支付列表（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "应用ID",
+            "name": "app_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "支付状态",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 1,
+            "description": "页码",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 20,
+            "description": "每页数量",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功"
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "无权限操作",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
     "/admin/payments/channels": {
       "get": {
         "security": [
@@ -697,6 +777,128 @@
           },
           "404": {
             "description": "Webhook记录不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/payments/{payment_id}": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /payments/{payment_id} 同体、同租户范围；供控制台在 admin 平面读取。参考：PCI DSS v4.0 Req 3.3 (Mask PAN)、PCI DSS v4.0 Req 4 (Encrypt Transmission)。",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "支付服务"
+        ],
+        "summary": "查询支付详情（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "支付ID",
+            "name": "payment_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功"
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "无权限操作",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "支付订单不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/payments/{payment_id}/receipt": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /payments/{payment_id}/receipt 同体、同租户范围；供控制台在 admin 平面读取。参考：PCI DSS v4.0 Req 3.3 (Mask PAN)、PCI DSS v4.0 Req 4 (Encrypt Transmission)。",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "支付服务"
+        ],
+        "summary": "获取支付回执（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "支付ID",
+            "name": "payment_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功"
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "无权限操作",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "支付订单不存在",
             "schema": {
               "$ref": "#/definitions/dto.Problem"
             }

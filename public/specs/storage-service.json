@@ -587,6 +587,368 @@
         }
       }
     },
+    "/admin/storage/files": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /files 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "获取文件列表（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "父文件夹ID，不填则查询根目录文件",
+            "name": "parent_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "页码（默认1）",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数（默认20，最大100）",
+            "name": "page_size",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "文件名关键词搜索",
+            "name": "keyword",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "文件列表及分页信息",
+            "schema": {
+              "$ref": "#/definitions/handler_dto.FileListResponse"
+            }
+          },
+          "400": {
+            "description": "参数验证失败",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /files 同体、同租户范围；供控制台在 admin 平面写入。",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "上传文件（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "文件所有者ID（缺省为当前认证用户）",
+            "name": "owner_id",
+            "in": "formData"
+          },
+          {
+            "type": "string",
+            "description": "可见性：private（私有）/ public（公开），默认private",
+            "name": "visibility",
+            "in": "formData"
+          },
+          {
+            "type": "string",
+            "description": "父文件夹ID，不填则上传到根目录",
+            "name": "parent_id",
+            "in": "formData"
+          },
+          {
+            "type": "file",
+            "description": "待上传的文件",
+            "name": "file",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "文件上传成功，返回文件元数据",
+            "schema": {
+              "$ref": "#/definitions/handler_dto.UploadFileDetailResponse"
+            }
+          },
+          "400": {
+            "description": "参数验证失败或文件类型不允许",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "413": {
+            "description": "文件大小超限",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "507": {
+            "description": "存储配额不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/files/{file_id}": {
+      "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /files/{file_id} 同体、同租户范围；供控制台在 admin 平面写入。软删除，入回收站。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "删除文件（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "文件ID",
+            "name": "file_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "文件删除成功，无返回体"
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "文件不存在或无权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/files/{file_id}/download": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /files/{file_id}/download 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/octet-stream",
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "下载文件（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "文件ID",
+            "name": "file_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "文件内容，Content-Disposition: attachment",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "206": {
+            "description": "部分内容，Content-Range 响应",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "文件不存在或无权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "416": {
+            "description": "Range 请求不合法",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/folders": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /storage/folders 同体、同租户范围；供控制台在 admin 平面写入。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "创建文件夹（管理端）",
+        "parameters": [
+          {
+            "description": "文件夹创建请求 — name: 文件夹名称, parent_id: 父文件夹ID（可选）",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handler_dto.CreateFolderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "文件夹创建成功，返回文件夹元数据",
+            "schema": {
+              "$ref": "#/definitions/handler_dto.CreateFolderResponse"
+            }
+          },
+          "400": {
+            "description": "参数验证失败或父文件夹不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
     "/admin/storage/quota": {
       "get": {
         "security": [
@@ -757,6 +1119,203 @@
           },
           "404": {
             "description": "租户数据不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/trash": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /storage/trash 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "获取回收站列表（管理端）",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "页码（默认1）",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数（默认20）",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回收站文件列表及分页信息",
+            "schema": {
+              "$ref": "#/definitions/handler_dto.FileListResponse"
+            }
+          },
+          "400": {
+            "description": "参数验证失败",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/trash/{trash_id}": {
+      "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /storage/trash/{trash_id} 同体、同租户范围；供控制台在 admin 平面写入。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "从回收站永久删除（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "回收站文件ID",
+            "name": "trash_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "永久删除成功，无返回体"
+          },
+          "400": {
+            "description": "文件不在回收站中，请先执行正常删除",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "文件不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/storage/trash/{trash_id}/restore": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /storage/trash/{trash_id}/restore 同体、同租户范围；供控制台在 admin 平面写入。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "存储服务"
+        ],
+        "summary": "从回收站恢复文件（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "回收站文件ID",
+            "name": "trash_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "恢复成功",
+            "schema": {
+              "$ref": "#/definitions/handler_dto.SimpleResponse"
+            }
+          },
+          "400": {
+            "description": "文件不在回收站中",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌已过期",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "404": {
+            "description": "文件不存在",
             "schema": {
               "$ref": "#/definitions/dto.Problem"
             }

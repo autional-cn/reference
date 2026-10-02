@@ -2148,15 +2148,15 @@
         },
         "overall_status": {
           "type": "string",
-          "example": "healthy"
+          "example": "operational"
         },
         "services_healthy": {
           "type": "integer",
-          "example": 15
+          "example": 26
         },
         "services_total": {
           "type": "integer",
-          "example": 15
+          "example": 26
         }
       }
     },

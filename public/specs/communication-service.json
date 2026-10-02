@@ -8,6 +8,127 @@
   },
   "basePath": "/api/v1",
   "paths": {
+    "/admin/communication/dashboard": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /communication/dashboard 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "获取通信仪表盘（管理端）",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "统计天数范围（默认30天）",
+            "name": "days",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功，返回租户通信投递仪表盘数据",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.CommunicationDashboardDataResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问该资源",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/communication/health/{channel}": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /communication/health/{channel} 同体；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "渠道连通性检查（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "通信渠道：sms/email/push",
+            "name": "channel",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "检查成功，返回渠道健康状态（healthy/unhealthy/not_configured）",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.ChannelHealthDataResponse"
+            }
+          },
+          "400": {
+            "description": "渠道参数无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问该资源",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "健康检查内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/admin/communication/logs": {
       "get": {
         "security": [
@@ -145,6 +266,82 @@
       }
     },
     "/admin/communication/providers": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /communication/providers 同体、同租户范围；供控制台在 admin 平面读取。凭据已脱敏。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "获取服务商配置列表（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "渠道筛选：sms/email/push",
+            "name": "channel",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "激活状态筛选：true/false",
+            "name": "is_active",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "页码，从1开始（默认1）",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数（默认20）",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功，返回配置列表（凭据已脱敏）",
+            "schema": {
+              "$ref": "#/definitions/dto.ListResponse-gitee_com_autional_service-communication_internal_handler_dto_ProviderConfigResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问该资源",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      },
       "post": {
         "security": [
           {
@@ -487,7 +684,149 @@
         }
       }
     },
+    "/admin/communication/template-stats": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /communication/template-stats 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "获取模板使用统计（近30天，管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "渠道筛选：sms/email/push",
+            "name": "channel",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功，返回各模板统计数据",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.TemplateStatsListResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问该资源",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/admin/communication/templates": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /communication/templates 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "获取模板列表（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "渠道筛选：sms/email/push",
+            "name": "channel",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "是否激活筛选：true/false",
+            "name": "is_active",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "关键词搜索（匹配模板名称或编码）",
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "页码，从1开始（默认1）",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数（默认20）",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功，返回模板列表",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.TemplateListResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证或令牌无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问该资源",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
+      },
       "post": {
         "security": [
           {
@@ -999,7 +1338,73 @@
     },
     "/communication/callback/{provider}": {
       "post": {
-        "responses": {}
+        "description": "接收并处理各短信、邮件、推送服务商（阿里云、腾讯云、AWS SNS/SES、SendGrid、Mailgun、FCM、APNs、JPush等）的投递状态回调通知，自动更新对应消息的发送状态。回调为公开端点，必须携带 HMAC-SHA256 签名（X-Callback-Signature，hex；密钥见 callback.secret），签名缺失/不符一律 401。参考：ePrivacy Directive 2002/58/EC、CAN-SPAM Act。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "通信服务"
+        ],
+        "summary": "处理短信/邮件/推送服务商回调",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "服务商名称：aliyun/tencentcloud/aws/sendgrid/ses/mailgun/fcm/apns/jpush",
+            "name": "provider",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "回调体 HMAC-SHA256 签名（hex，密钥 = callback.secret）",
+            "name": "X-Callback-Signature",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "回调数据（各服务商格式不同，支持JSON和Form表单）",
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回调已接收确认",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.CallbackResultDetailResponse"
+            }
+          },
+          "400": {
+            "description": "请求数据格式错误",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "回调签名缺失或无效",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "回调指向的消息不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "回调处理内部错误/验签密钥未配置",
+            "schema": {
+              "$ref": "#/definitions/dto.SimpleResponse"
+            }
+          }
+        }
       }
     },
     "/communication/dashboard": {
@@ -3177,6 +3582,37 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "gitee_com_autional_service-communication_internal_handler_dto.CallbackResultDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "$ref": "#/definitions/gitee_com_autional_service-communication_internal_handler_dto.CallbackResultResponse"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "gitee_com_autional_service-communication_internal_handler_dto.CallbackResultResponse": {
+      "description": "提供商回调结果",
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "example": "aliyun"
+        },
+        "received": {
+          "type": "boolean",
+          "example": true
         }
       }
     },

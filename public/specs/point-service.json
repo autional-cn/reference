@@ -1230,6 +1230,88 @@
         }
       }
     },
+    "/admin/points/{user_id}/exchange": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /points/{user_id}/exchange 同体、同租户范围；供控制台在 admin 平面执行。兑换后积分即扣除，不可逆。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "积分服务"
+        ],
+        "summary": "积分兑换（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "幂等键，推荐UUID",
+            "name": "X-Idempotency-Key",
+            "in": "header"
+          },
+          {
+            "description": "兑换请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-point_internal_handler_dto.ExchangePointsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "积分兑换成功，返回账户和交易记录",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-point_internal_handler_dto.PointOperationResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误或余额不足",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "账户不存在",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/admin/points/{user_id}/expire": {
       "post": {
         "security": [
@@ -1388,6 +1470,73 @@
         }
       }
     },
+    "/admin/points/{user_id}/risk-score": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /points/{user_id}/risk-score 同体、同租户范围；供控制台在 admin 平面读取。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "积分服务"
+        ],
+        "summary": "获取用户积分风险评分（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "用户ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "风险评分（score>=70高风险，40-69中风险，<40低风险）",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-point_internal_handler_dto.PointRiskScoreDetailResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "用户不存在",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
     "/admin/points/{user_id}/status": {
       "put": {
         "security": [
@@ -1433,6 +1582,88 @@
           },
           "400": {
             "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "账户不存在",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/points/{user_id}/transfer": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "与用户面 /points/{user_id}/transfer 同体、同租户范围（user_id 为发送方）；供控制台在 admin 平面执行。通过 X-Idempotency-Key 请求头防幂等重复转账。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "积分服务"
+        ],
+        "summary": "积分转账（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "发送方用户ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "幂等键，推荐UUID",
+            "name": "X-Idempotency-Key",
+            "in": "header"
+          },
+          {
+            "description": "转账请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-point_internal_handler_dto.TransferPointsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "积分转账成功，返回账户和交易记录",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-point_internal_handler_dto.PointOperationResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误或余额不足",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }

@@ -28,6 +28,7 @@ const services = [
   { name:'hash-service-sm', title:'国密哈希服务' },
   { name:'captcha3d-service', title:'3D 验证码服务' },
   { name:'config-service', title:'配置中心服务' },
+  { name:'stream-service', title:'实时事件流服务' },
 ];
 
 export interface Props {
@@ -37,7 +38,7 @@ export interface Props {
 }
 const {
   title = 'API 参考 — Autional',
-  description = '覆盖全部 26 个 Autional 微服务的交互式 OpenAPI 3.0 参考文档，基于 Scalar UI 浏览 1400+ REST 端点。',
+  description = '覆盖全部 27 个 Autional 微服务的交互式 OpenAPI 3.0 参考文档，基于 Scalar UI 浏览 1400+ REST 端点。',
   keywords,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);

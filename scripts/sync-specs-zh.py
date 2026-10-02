@@ -28,6 +28,7 @@ SERVICES = [
     "secret-service", "saml-service", "pay-service", "thirdparty-service",
     "verification-service", "rbac-service", "gateway-service",
     "hash-service-standard", "hash-service-sm", "captcha3d-service", "config-service",
+    "stream-service",
 ]
 
 # Display names used across the .cn portals (nav, page titles, spec titles).
@@ -58,6 +59,7 @@ TITLES = {
     "hash-service-sm": "国密哈希服务",
     "captcha3d-service": "3D 验证码服务",
     "config-service": "配置中心服务",
+    "stream-service": "实时事件流服务",
 }
 
 

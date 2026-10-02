@@ -18,8 +18,8 @@ importers:
         specifier: 0.1.0-rc
         version: 0.1.0-rc(tailwindcss@3.4.19(yaml@2.9.0))
       '@autional-cn/tokens':
-        specifier: 0.1.0-rc
-        version: 0.1.0-rc
+        specifier: 0.1.0-rc.2
+        version: 0.1.0-rc.2
       astro:
         specifier: ^5.0.0
         version: 5.18.2(@types/node@24.13.2)(jiti@1.21.7)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0)
@@ -88,12 +88,15 @@ packages:
     resolution: {integrity: sha512-8oddpOae35pJsXPQXhTkM0ypfKPskVsh2bCxRtbf7e+/Epw2nReakFYpLKjZMEr75CsoF203PMnCocpfz0s69A==}
 
   '@autional-cn/tailwind-preset@0.1.0-rc':
-    resolution: {integrity: sha512-EAtWBIyML8SrzVKs7batJ/gwFM/A86ir2HlGxlzDWoZpzxq94KK4QwXzt0XVBHgJsScrdnqWDIECuRjayYesRA==, tarball: https://registry.npmjs.org/@autional-cn/tailwind-preset/-/tailwind-preset-0.1.0-rc.tgz}
+    resolution: {integrity: sha512-EAtWBIyML8SrzVKs7batJ/gwFM/A86ir2HlGxlzDWoZpzxq94KK4QwXzt0XVBHgJsScrdnqWDIECuRjayYesRA==}
     peerDependencies:
       tailwindcss: '>=3.0.0'
 
   '@autional-cn/tokens@0.1.0-rc':
     resolution: {integrity: sha512-L0G4zxni+1jkpgNVdJ7cF6rAsEZeHoGXVGBM0YVlnw7pcB1NfoXyFNmm7yss0Jmu2eG9joIdbQh1EqVMipbSMg==}
+
+  '@autional-cn/tokens@0.1.0-rc.2':
+    resolution: {integrity: sha512-YfcPSaT2hNc2HZg+u+/0Lwc4KsFTj6tkwJ81PtBoa4r71ZaNxWzROwh+fVKdaftGaxXWpuO+pLt/woGTvEeMRA==}
 
   '@babel/helper-string-parser@7.29.7':
     resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
@@ -2425,6 +2428,8 @@ snapshots:
       tailwindcss: 3.4.19(yaml@2.9.0)
 
   '@autional-cn/tokens@0.1.0-rc': {}
+
+  '@autional-cn/tokens@0.1.0-rc.2': {}
 
   '@babel/helper-string-parser@7.29.7': {}
 

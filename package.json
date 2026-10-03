@@ -8,7 +8,7 @@
     "preview": "astro preview --port 4434"
   },
   "dependencies": {
-    "@autional-cn/tailwind-preset": "0.1.0-rc",
+    "@autional-cn/tailwind-preset": "0.1.0-rc.1",
     "@autional-cn/tokens": "0.1.0-rc.3",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/tailwind": "^6.0.2",

@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/oauth/api/v1",
   "paths": {
     "/admin/oauth/clients": {
       "get": {
@@ -4335,7 +4335,7 @@
         "registration_client_uri": {
           "description": "注册管理URI",
           "type": "string",
-          "example": "https://authms.example.com/api/v1/oauth/register/app-123"
+          "example": "https://autional.example.com/api/v1/oauth/register/app-123"
         },
         "scope": {
           "description": "权限范围",
@@ -4916,7 +4916,7 @@
         },
         "verification_uri": {
           "type": "string",
-          "example": "https://authms.example.com/device"
+          "example": "https://autional.example.com/device"
         }
       }
     },
@@ -6060,5 +6060,9 @@
       "description": "OpenID Connect 相关接口：发现、用户信息、会话管理",
       "name": "OIDC"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

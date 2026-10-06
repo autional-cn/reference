@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/mfa/api/v1",
   "paths": {
     "/admin/mfa/backup-codes": {
       "get": {
@@ -2053,6 +2053,58 @@
             }
           },
           "400": {
+            "description": "设备数量已达上限",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/mfa/devices/sync/{sync_id}": {
+      "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "移除指定设备同步记录，释放设备名额（软删；列表/计数自动排除）。参考：RFC 6238 (TOTP)、OWASP ASVS V2.8.3。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "多因素认证"
+        ],
+        "summary": "解绑同步设备",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "同步设备ID",
+            "name": "sync_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "解绑成功"
+          },
+          "400": {
             "description": "参数错误",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
@@ -2064,8 +2116,8 @@
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
           },
-          "409": {
-            "description": "设备数量已达上限",
+          "404": {
+            "description": "同步设备未找到",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
@@ -6497,5 +6549,9 @@
       "description": "管理员接口：用户管理、系统配置、安全策略",
       "name": "Admin"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/compliance/api/v1",
   "paths": {
     "/admin/compliance/ai-decisions": {
       "get": {
@@ -14176,5 +14176,9 @@
       "description": "合规策略管理：策略创建、分配、执行",
       "name": "Compliance Policy"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

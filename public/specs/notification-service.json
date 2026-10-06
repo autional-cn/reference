@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/notification/api/v1",
   "paths": {
     "/admin/announcements": {
       "get": {
@@ -1356,6 +1356,69 @@
           },
           "403": {
             "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/notifications/security-advisory-broadcast": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "向全部已确认（status=active）安全公告订阅者发送公告邮件，每封附该订户自己的退订链接。仅平台租户可调用（RequirePlatformTenant 门禁）。参考：CAN-SPAM Act (15 U.S.C. §7701) — Commercial Email Compliance。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "合规管理 - Trust Center"
+        ],
+        "summary": "广播安全公告（平台级）",
+        "parameters": [
+          {
+            "description": "公告广播请求",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "广播完成",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastDetailResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "平台级访问受限",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
@@ -6361,6 +6424,53 @@
         }
       }
     },
+    "gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "$ref": "#/definitions/gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastResponse"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastRequest": {
+      "type": "object",
+      "required": [
+        "content",
+        "title"
+      ],
+      "properties": {
+        "content": {
+          "type": "string",
+          "example": "We have released a patch..."
+        },
+        "title": {
+          "type": "string",
+          "example": "Security advisory: CVE-2026-0001"
+        }
+      }
+    },
+    "gitee_com_autional_service-notification_internal_handler_dto.SecurityAdvisoryBroadcastResponse": {
+      "type": "object",
+      "properties": {
+        "failed": {
+          "type": "integer",
+          "example": 0
+        },
+        "recipients": {
+          "type": "integer",
+          "example": 42
+        }
+      }
+    },
     "gitee_com_autional_service-notification_internal_handler_dto.SecuritySubscribeDetailResponse": {
       "type": "object",
       "properties": {
@@ -6992,5 +7102,9 @@
       "description": "公开信任中心：安全状态、合规证书、文档",
       "name": "Trust Center"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

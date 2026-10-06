@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/identity/api/v1",
   "paths": {
     "/admin/abac-policies": {
       "get": {
@@ -3130,49 +3130,6 @@
         }
       }
     },
-    "/admin/role-activations/{role_activation_id}/approve": {
-      "post": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "description": "管理员批准待处理的角色激活请求",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "RBAC - 角色"
-        ],
-        "summary": "批准角色激活",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "激活记录ID",
-            "name": "role_activation_id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "批准成功",
-            "schema": {
-              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
-            }
-          },
-          "400": {
-            "description": "请求参数无效",
-            "schema": {
-              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
-            }
-          }
-        }
-      }
-    },
     "/admin/role-activations/{role_activation_id}/revoke": {
       "post": {
         "security": [
@@ -5892,7 +5849,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "分页查询当前用户的操作审计日志，支持按时间范围和操作类型筛选",
+        "description": "分页查询当前用户的操作审计日志，支持按时间范围、操作类型、关键词与状态语义筛选",
         "consumes": [
           "application/json"
         ],
@@ -5935,6 +5892,18 @@
             "description": "操作类型",
             "name": "action",
             "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "关键词（IP/设备/详情）",
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "状态语义筛选 success/failure",
+            "name": "status_class",
+            "in": "query"
           }
         ],
         "responses": {
@@ -5966,7 +5935,7 @@
         ],
         "responses": {
           "200": {
-            "description": "最新备份数据",
+            "description": "最新备份数据（无备份时 data=null）",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-identity_internal_handler_dto.AuthenticatorBackupDetailResponse"
             }
@@ -6241,6 +6210,17 @@
           "身份认证"
         ],
         "summary": "永久删除账户 (GDPR 被遗忘权/账户删除)",
+        "parameters": [
+          {
+            "description": "request body",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-identity_internal_handler_dto.DeleteAccountRequest"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "操作成功",
@@ -7060,6 +7040,40 @@
             "description": "角色激活成功",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.DataResponse-gitee_com_autional_service-identity_internal_handler_dto_ActivationResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/me/role-activations/available-roles": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "返回当前租户的角色目录，供用户在选择申请临时激活（JIT 提权）时使用。需 bearerAuth 认证。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "RBAC - 角色"
+        ],
+        "summary": "查询可申请的角色",
+        "responses": {
+          "200": {
+            "description": "角色列表",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.DataResponse-array_gitee_com_autional_service-identity_internal_handler_dto_AvailableRoleResponse"
             }
           },
           "400": {
@@ -12455,6 +12469,26 @@
         }
       }
     },
+    "gitee_com_autional_service-core_base_dto.DataResponse-array_gitee_com_autional_service-identity_internal_handler_dto_AvailableRoleResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/gitee_com_autional_service-identity_internal_handler_dto.AvailableRoleResponse"
+          }
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
     "gitee_com_autional_service-core_base_dto.DataResponse-array_gitee_com_autional_service-identity_internal_handler_dto_DiscoverTenantInfo": {
       "type": "object",
       "properties": {
@@ -13571,7 +13605,7 @@
           "example": "sess_123"
         },
         "status": {
-          "description": "Status",
+          "description": "状态：success/failed；空串=未知（ADR-06）",
           "type": "string",
           "example": "success"
         },
@@ -13849,6 +13883,23 @@
         "total": {
           "description": "总条数（平铺，便于直接读取）",
           "type": "integer"
+        }
+      }
+    },
+    "gitee_com_autional_service-identity_internal_handler_dto.AvailableRoleResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -14700,6 +14751,25 @@
         },
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "gitee_com_autional_service-identity_internal_handler_dto.DeleteAccountRequest": {
+      "description": "删除账户请求参数",
+      "type": "object",
+      "required": [
+        "password"
+      ],
+      "properties": {
+        "password": {
+          "description": "Password",
+          "type": "string",
+          "example": "CurrentP@ssw0rd"
+        },
+        "reason": {
+          "description": "Reason",
+          "type": "string",
+          "example": "no longer needed"
         }
       }
     },
@@ -17761,6 +17831,11 @@
           "type": "string",
           "example": "2026-04-15T12:00:00Z"
         },
+        "lockout_duration_minutes": {
+          "description": "锁定时长（分钟）",
+          "type": "integer",
+          "example": 30
+        },
         "login_fail_count": {
           "description": "失败次数",
           "type": "integer",
@@ -19264,8 +19339,7 @@
     "handler.beginRegistrationRequest": {
       "type": "object",
       "required": [
-        "password",
-        "user_name"
+        "password"
       ],
       "properties": {
         "display_name": {
@@ -19276,6 +19350,7 @@
           "minLength": 1
         },
         "user_name": {
+          "description": "UserName 仅作凭据 label（UP-91-A）：可缺省，服务端派生链补全（user_name → email → user-<id>）。",
           "type": "string"
         }
       }
@@ -19613,5 +19688,9 @@
       "description": "账户恢复：忘记密码、账户找回、身份验证",
       "name": "账户恢复"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

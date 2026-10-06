@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/tenant/api/v1",
   "paths": {
     "/admin/tenants": {
       "get": {
@@ -3301,6 +3301,82 @@
           },
           "404": {
             "description": "资源未找到",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/tenants/{tenant_id}/featured": {
+      "put": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "平台级策展（RequirePlatformTenant 门禁，租户管理员不可自荐）；featured=false 时 featured_sort 服务端归 0。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "租户服务"
+        ],
+        "summary": "设置租户精选",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "租户ID",
+            "name": "tenant_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "精选标记",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-tenant_internal_handler_dto.UpdateTenantFeaturedRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "设置成功",
+            "schema": {
+              "$ref": "#/definitions/dto.DataResponse-gitee_com_autional_service-tenant_internal_handler_dto_TenantFeaturedResponse"
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "401": {
+            "description": "未认证",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
+            }
+          },
+          "404": {
+            "description": "租户不存在",
             "schema": {
               "$ref": "#/definitions/gitee_com_autional_service-core_base_dto.SimpleResponse"
             }
@@ -7320,7 +7396,7 @@
     },
     "/tenant/public/tenants": {
       "get": {
-        "description": "返回所有活跃租户的基本信息，供登录页选择",
+        "description": "三模式：keyword 非空 → 服务端搜索（name/display_name/domain LIKE，真实分页）；featured=true → 运营精选（active∩featured，featured_sort 升序，≤24）；无参 → 全量活跃租户（legacy，与改版前行为一致）。keyword 优先于 featured。",
         "consumes": [
           "application/json"
         ],
@@ -7331,6 +7407,32 @@
           "租户服务"
         ],
         "summary": "公开租户列表",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "关键词（name/display_name/domain 模糊匹配，非空即搜索模式）",
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "精选模式（=true 时返回运营精选租户）",
+            "name": "featured",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "页码（搜索模式，默认 1）",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "每页条数（搜索模式，默认 20，上限 50）",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "租户列表",
@@ -7936,6 +8038,23 @@
         },
         "data": {
           "$ref": "#/definitions/gitee_com_autional_service-tenant_internal_handler_dto.RotateApiKeyResponse"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.DataResponse-gitee_com_autional_service-tenant_internal_handler_dto_TenantFeaturedResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "data": {
+          "$ref": "#/definitions/gitee_com_autional_service-tenant_internal_handler_dto.TenantFeaturedResponse"
         },
         "message": {
           "type": "string"
@@ -10276,6 +10395,13 @@
         "domain": {
           "type": "string"
         },
+        "featured": {
+          "description": "Featured 运营精选标记（品牌选择页默认展示位）。additive：无 omitempty，\n避免字段是否存在随值变化（auth 消费者忽略未知字段，零影响）。",
+          "type": "boolean"
+        },
+        "featured_sort": {
+          "type": "integer"
+        },
         "id": {
           "type": "string"
         },
@@ -10618,6 +10744,20 @@
         }
       }
     },
+    "gitee_com_autional_service-tenant_internal_handler_dto.TenantFeaturedResponse": {
+      "type": "object",
+      "properties": {
+        "featured": {
+          "type": "boolean"
+        },
+        "featured_sort": {
+          "type": "integer"
+        },
+        "tenant_id": {
+          "type": "string"
+        }
+      }
+    },
     "gitee_com_autional_service-tenant_internal_handler_dto.TenantInfo": {
       "type": "object",
       "properties": {
@@ -10786,6 +10926,11 @@
           "description": "用户上限",
           "type": "integer",
           "example": 100
+        },
+        "member_count": {
+          "description": "成员数（仅列表端点回填；disabled 不计，口径同成员列表）",
+          "type": "integer",
+          "example": 12
         },
         "name": {
           "description": "租户名称（用作 URL slug）",
@@ -11350,6 +11495,20 @@
         },
         "session_timeout": {
           "type": "string"
+        }
+      }
+    },
+    "gitee_com_autional_service-tenant_internal_handler_dto.UpdateTenantFeaturedRequest": {
+      "type": "object",
+      "required": [
+        "featured"
+      ],
+      "properties": {
+        "featured": {
+          "type": "boolean"
+        },
+        "featured_sort": {
+          "type": "integer"
         }
       }
     },
@@ -12064,5 +12223,9 @@
       "description": "租户成员管理：邀请、审批、角色分配",
       "name": "成员管理"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

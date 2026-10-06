@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/rbac/api/v1",
   "paths": {
     "/admin/approval-requests": {
       "get": {
@@ -4851,5 +4851,9 @@
       "description": "角色权限管理：角色CRUD、权限分配、审批流程、SoD",
       "name": "RBAC"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

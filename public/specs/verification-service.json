@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/verification/api/v1",
   "paths": {
     "/admin/verifications": {
       "get": {
@@ -3110,5 +3110,9 @@
       "description": "未成年人保护：年龄验证、家长控制",
       "name": "未成年人保护"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

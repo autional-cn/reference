@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "SM crypto password hashing service (PBKDF2-SM3 variant). gRPC-only service.",
+    "description": "国密密码哈希服务（PBKDF2-SM3 变体）。gRPC-only，不经 API 网关暴露。",
     "title": "国密哈希服务 API",
     "contact": {},
     "version": "1.0.0"

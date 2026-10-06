@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/status/api/v1",
   "paths": {
     "/internal/schedulers": {
       "get": {
@@ -1292,7 +1292,7 @@
     },
     "/status/subscriptions/preferences": {
       "get": {
-        "description": "根据邮箱查询订阅者的通知偏好设置",
+        "description": "按订阅管理令牌（确认邮件/摘要邮件内的 manage 链接所携带的 token）查询订阅者的通知偏好设置",
         "consumes": [
           "application/json"
         ],
@@ -1306,8 +1306,8 @@
         "parameters": [
           {
             "type": "string",
-            "description": "订阅邮箱地址",
-            "name": "email",
+            "description": "订阅管理令牌（邮件内 manage 链接携带）",
+            "name": "token",
             "in": "query",
             "required": true
           }
@@ -1334,7 +1334,7 @@
         }
       },
       "put": {
-        "description": "更新订阅者的通知偏好设置（通知类型、摘要频率、关注分类等）",
+        "description": "按订阅管理令牌更新订阅者的通知偏好设置（通知类型、摘要频率、关注分类等）",
         "consumes": [
           "application/json"
         ],
@@ -1347,7 +1347,7 @@
         "summary": "更新订阅通知偏好",
         "parameters": [
           {
-            "description": "偏好设置",
+            "description": "偏好设置（token 为邮件内 manage 链接携带的令牌）",
             "name": "body",
             "in": "body",
             "required": true,
@@ -2401,7 +2401,6 @@
     "gitee_com_autional_service-status_internal_handler_dto.SubscriptionPreferencesRequest": {
       "type": "object",
       "required": [
-        "email",
         "token"
       ],
       "properties": {
@@ -2413,9 +2412,6 @@
         },
         "digest_frequency": {
           "description": "immediate, daily, weekly",
-          "type": "string"
-        },
-        "email": {
           "type": "string"
         },
         "notify_incidents": {
@@ -2609,5 +2605,9 @@
       "description": "状态页 RSS Feed",
       "name": "状态页-RSS"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/point/api/v1",
   "paths": {
     "/admin/point-rules": {
       "get": {
@@ -4196,5 +4196,9 @@
       "description": "积分管理后台：全局配置、审计",
       "name": "积分管理"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

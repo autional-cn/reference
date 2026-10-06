@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Payment processing service for Autional — handles payments, refunds, channels, webhooks, and reconciliation",
+    "description": "Autional 支付服务——处理支付、退款、支付渠道、Webhook 与对账。",
     "title": "支付服务 API",
     "contact": {},
     "version": "1.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/pay/api/v1",
   "paths": {
     "/admin/pay/integrity/{pay_id}": {
       "get": {
@@ -899,6 +899,74 @@
           },
           "404": {
             "description": "支付订单不存在",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          }
+        }
+      }
+    },
+    "/admin/refunds": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "租户级退款记录列表（pay_refund_records 单源），支持按退款状态筛选。参考：PCI DSS v4.0 Req 3.3 (Mask PAN)、PCI DSS v4.0 Req 4 (Encrypt Transmission)。",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "支付服务"
+        ],
+        "summary": "查询退款列表（管理端）",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "退款状态（pending/succeeded/failed）",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 1,
+            "description": "页码",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 20,
+            "description": "每页数量",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功"
+          },
+          "400": {
+            "description": "请求参数错误",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "schema": {
+              "$ref": "#/definitions/dto.Problem"
+            }
+          },
+          "403": {
+            "description": "无权限操作",
             "schema": {
               "$ref": "#/definitions/dto.Problem"
             }
@@ -2446,5 +2514,9 @@
       "description": "Payment channel configuration and management",
       "name": "channels"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

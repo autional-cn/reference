@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/session/api/v1",
   "paths": {
     "/admin/devices/{device_id}/risk": {
       "get": {
@@ -4345,5 +4345,9 @@
       "description": "凭证管理：证书、凭证创建与验证",
       "name": "凭证管理"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

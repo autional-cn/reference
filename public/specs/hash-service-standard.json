@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Argon2id password hashing service (standard configuration). gRPC-only service.",
+    "description": "Argon2id 密码哈希服务（标准配置）。gRPC-only，不经 API 网关暴露。",
     "title": "密码哈希服务 API",
     "contact": {},
     "version": "1.0.0"

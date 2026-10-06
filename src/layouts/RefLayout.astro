@@ -38,7 +38,7 @@ export interface Props {
 }
 const {
   title = 'API 参考 — Autional',
-  description = '覆盖全部 27 个 Autional 微服务的交互式 OpenAPI 3.0 参考文档，基于 Scalar UI 浏览 1400+ REST 端点。',
+  description = '覆盖全部 27 个 Autional 微服务的交互式 Swagger 2.0（OpenAPI 2.0）参考文档，基于 Scalar UI 浏览 1,500+ REST 端点。',
   keywords,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -82,7 +82,7 @@ const ogImage = new URL('/og-default.png', Astro.site).href;
     '@type': 'WebSite',
     name: 'Autional API 参考',
     url: 'https://reference.autional.cn',
-    description: 'Autional 全部微服务的交互式 OpenAPI 3.0 参考文档。',
+    description: 'Autional 全部微服务的交互式 Swagger 2.0（OpenAPI 2.0）参考文档。',
     publisher: { '@type': 'Organization', name: 'Autional', url: 'https://www.autional.cn' },
   })} />
 </head>
@@ -93,21 +93,39 @@ const ogImage = new URL('/og-default.png', Astro.site).href;
       <img src="/logo-mark.svg" alt="Autional" class="h-5 w-5 object-contain">
       <span class="text-sm font-extrabold tracking-[var(--letter-spacing-heading-lg)] text-primary-900">API 参考</span>
     </a>
-    <div class="flex items-center gap-5">
-      <a href="https://wiki.autional.cn" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">API 知识库</a>
-      <a href="https://github.com/autional-cn/reference" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">GitHub</a>
-      <a href="https://www.autional.cn" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">autional.cn &rarr;</a>
+    <div class="flex items-center gap-4">
+      <button
+        id="svc-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="svc-drawer"
+        class="lg:hidden inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M2 4h12M2 8h12M2 12h12" stroke-linecap="round" />
+        </svg>
+        服务
+      </button>
+      <div class="hidden sm:flex items-center gap-5">
+        <a href="https://wiki.autional.cn" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">API 知识库</a>
+        <a href="https://github.com/autional-cn/reference" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">GitHub</a>
+        <a href="https://www.autional.cn" class="text-xs font-medium text-primary-500 hover:text-primary-700 transition">autional.cn &rarr;</a>
+      </div>
     </div>
   </header>
   <div class="flex h-[calc(100vh-48px)] overflow-hidden">
-    <!-- 左侧服务列表 -->
-    <aside class="w-60 shrink-0 border-r border-neutral-100 overflow-y-auto bg-neutral-50/50 flex flex-col">
+    <!-- 左侧服务列表（<lg 为抽屉形态） -->
+    <div id="svc-backdrop" class="hidden lg:hidden fixed inset-0 z-[55] bg-neutral-900/40" aria-hidden="true"></div>
+    <aside
+      id="svc-drawer"
+      class="w-60 shrink-0 -translate-x-full transition-transform fixed inset-y-0 left-0 z-[60] flex flex-col overflow-y-auto border-r border-neutral-100 bg-white shadow-xl lg:static lg:translate-x-0 lg:transition-none lg:z-auto lg:bg-neutral-50/50 lg:shadow-none"
+    >
       <div class="px-4 py-2.5">
         <span class="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary-500">服务</span>
       </div>
       <nav class="flex-1 overflow-y-auto py-2">
         {services.map(s => (
-          <a href={`/${s.name}/`} class={`block mx-2 my-0.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+          <a href={`/${s.name}/`} class={`block mx-2 my-0.5 rounded-lg px-3 py-3 text-sm font-medium transition ${
             currentSvc === s.name
               ? 'bg-primary-100 text-primary-800'
               : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
@@ -116,12 +134,34 @@ const ogImage = new URL('/og-default.png', Astro.site).href;
           </a>
         ))}
       </nav>
+      <div class="mt-auto border-t border-neutral-100 px-4 py-3 lg:hidden">
+        <a href="https://wiki.autional.cn" class="block py-2 text-xs font-medium text-primary-500">API 知识库</a>
+        <a href="https://github.com/autional-cn/reference" class="block py-2 text-xs font-medium text-primary-500">GitHub</a>
+        <a href="https://www.autional.cn" class="block py-2 text-xs font-medium text-primary-500">autional.cn &rarr;</a>
+      </div>
     </aside>
 
     <!-- 主内容区 -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden min-w-0">
       <slot />
     </div>
   </div>
+  <script is:inline>
+    (() => {
+      const toggle = document.getElementById('svc-toggle');
+      const drawer = document.getElementById('svc-drawer');
+      const backdrop = document.getElementById('svc-backdrop');
+      if (!toggle || !drawer || !backdrop) return;
+      const setOpen = (open) => {
+        drawer.classList.toggle('-translate-x-full', !open);
+        backdrop.classList.toggle('hidden', !open);
+        toggle.setAttribute('aria-expanded', String(open));
+      };
+      toggle.addEventListener('click', () => setOpen(drawer.classList.contains('-translate-x-full')));
+      backdrop.addEventListener('click', () => setOpen(false));
+      drawer.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+    })();
+  </script>
 </body>
 </html>

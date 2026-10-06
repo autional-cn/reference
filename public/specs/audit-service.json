@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/audit/api/v1",
   "paths": {
     "/admin/audit/alerts": {
       "get": {
@@ -7379,5 +7379,9 @@
       "description": "公开信任中心：安全状态、合规证书、文档",
       "name": "Trust Center"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

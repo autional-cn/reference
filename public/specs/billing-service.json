@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/billing/api/v1",
   "paths": {
     "/admin/billing/alerts": {
       "get": {
@@ -9190,5 +9190,9 @@
       "description": "计费服务内部接口：供其他微服务调用的内部端点",
       "name": "计费服务 - 内部接口"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

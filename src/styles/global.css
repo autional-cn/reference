@@ -26,10 +26,12 @@
 @tailwind utilities;
 
 /* ── 以下为本站点专有：Scalar API reference 容器约束（primitives.css 不提供）── */
-/* Constrain the Scalar-created container to wrapper height so detail content scrolls */
+/* Constrain the Scalar-created container to the flex-remaining height so detail
+   content scrolls. Uses flex sizing instead of a fixed max-height offset so the
+   page's top bars (service bar / access note) can change height freely. */
 #scalar-wrapper > div:has(.scalar-api-reference) {
+  flex: 1 1 auto;
   overflow-y: auto !important;
-  max-height: calc(100% - 33px) !important;
   min-height: 0 !important;
 }
 

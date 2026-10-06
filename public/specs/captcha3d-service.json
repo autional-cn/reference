@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/captcha3d/api/v1",
   "paths": {
     "/captcha/challenge": {
       "post": {
@@ -422,5 +422,9 @@
       "description": "3D 验证码：挑战、生成、校验",
       "name": "验证码"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

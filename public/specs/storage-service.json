@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/storage/api/v1",
   "paths": {
     "/admin/storage/buckets": {
       "get": {
@@ -1336,7 +1336,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "获取当前用户在指定文件夹下的文件列表，支持分页和文件名关键词搜索，结果按创建时间倒序排列。参考：GDPR Art 32 (Security of Processing)。",
+        "description": "获取当前用户在指定文件夹下的文件列表，支持分页和文件名关键词搜索，结果按创建时间倒序排列；include_directories=true 时同时返回子文件夹（目录浏览）。参考：GDPR Art 32 (Security of Processing)。",
         "consumes": [
           "application/json"
         ],
@@ -1370,6 +1370,12 @@
             "type": "string",
             "description": "文件名关键词搜索",
             "name": "keyword",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "是否包含子文件夹（默认false仅文件）",
+            "name": "include_directories",
             "in": "query"
           }
         ],
@@ -5407,6 +5413,11 @@
           "type": "string",
           "example": "file_abc123"
         },
+        "is_directory": {
+          "description": "是否为文件夹",
+          "type": "boolean",
+          "example": false
+        },
         "is_public": {
           "description": "可见性?",
           "type": "boolean",
@@ -6543,5 +6554,9 @@
       "description": "公开信任中心：安全状态、合规证书、文档",
       "name": "Trust Center"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

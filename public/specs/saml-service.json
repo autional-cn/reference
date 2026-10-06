@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/saml/api/v1",
   "paths": {
     "/admin/saml/providers": {
       "get": {
@@ -1306,5 +1306,9 @@
       "description": "SAML 管理接口：IdP/SP 配置",
       "name": "SAML Admin"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

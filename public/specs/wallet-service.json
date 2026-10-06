@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/wallet/api/v1",
   "paths": {
     "/admin/wallets": {
       "get": {
@@ -6631,5 +6631,9 @@
       "description": "钱包管理后台：全局配置、费率、审批",
       "name": "钱包服务 - 管理"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

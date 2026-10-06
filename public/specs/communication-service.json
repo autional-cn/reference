@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/communication/api/v1",
   "paths": {
     "/admin/communication/dashboard": {
       "get": {
@@ -5374,5 +5374,9 @@
       "description": "通信接口：邮件、短信、Webhook",
       "name": "通信服务"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

@@ -20,6 +20,50 @@ sys.stdout.reconfigure(encoding="utf-8")
 SPECS_SRC = r"D:\go\auth_ms_new\docker\specs"
 PORTAL_SPECS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public", "specs")
 
+# Public gateway entry. The specs ship without host/schemes/basePath, so Scalar
+# resolves sample requests against the docs origin (reference.autional.cn),
+# which 404s on every /api/v1 path. The only public entry that routes these
+# services is the gateway: https://api.autional.cn/bff/<short>/api/v1/...
+# Route source of truth: shared/service-gateway/configs/service/gateway-service.yaml
+GATEWAY_HOST = "api.autional.cn"
+
+# service name -> gateway short name (27-slot demoServiceHosts map in
+# shared/service-gateway/demo/embed.go, mirrored by the ingress template).
+# Only services with a public /bff route are listed; the remaining six
+# (config, thirdparty, hash-standard, hash-sm, stream, gateway) have no public
+# REST surface and keep their specs unmodified.
+GATEWAY_SHORT = {
+    "identity-service": "identity",
+    "profile-service": "profile",
+    "tenant-service": "tenant",
+    "session-service": "session",
+    "mfa-service": "mfa",
+    "oauth-service": "oauth",
+    "wallet-service": "wallet",
+    "point-service": "point",
+    "audit-service": "audit",
+    "notification-service": "notification",
+    "communication-service": "communication",
+    "storage-service": "storage",
+    "billing-service": "billing",
+    "compliance-service": "compliance",
+    "status-service": "status",
+    "secret-service": "secret",
+    "saml-service": "saml",
+    "pay-service": "pay",
+    "verification-service": "verification",
+    "rbac-service": "rbac",
+    "captcha3d-service": "captcha3d",
+}
+
+# Upstream descriptions for these services are English-only; the portal is zh-CN.
+DESC_ZH = {
+    "pay-service": "Autional 支付服务——处理支付、退款、支付渠道、Webhook 与对账。",
+    "thirdparty-service": "第三方集成服务——提供 CAPTCHA 与外部供应商集成能力。",
+    "hash-service-standard": "Argon2id 密码哈希服务（标准配置）。gRPC-only，不经 API 网关暴露。",
+    "hash-service-sm": "国密密码哈希服务（PBKDF2-SM3 变体）。gRPC-only，不经 API 网关暴露。",
+}
+
 SERVICES = [
     "identity-service", "profile-service", "tenant-service", "session-service",
     "mfa-service", "oauth-service", "wallet-service", "point-service",
@@ -64,9 +108,15 @@ TITLES = {
 
 
 def rebrand(node):
-    """Upstream descriptions/examples say `AuthMS`; the portals are Autional."""
+    """Upstream descriptions/examples say `AuthMS`; the portals are Autional.
+    All three casings appear upstream (e.g. `https://authms.example.com`), so
+    replace each variant — the patterns are mutually exclusive."""
     if isinstance(node, str):
-        return node.replace("AuthMS", "Autional")
+        return (
+            node.replace("AuthMS", "Autional")
+            .replace("AUTHMS", "AUTIONAL")
+            .replace("authms", "autional")
+        )
     if isinstance(node, list):
         return [rebrand(v) for v in node]
     if isinstance(node, dict):
@@ -91,7 +141,19 @@ def main() -> int:
         with open(src, encoding="utf-8") as fh:
             spec = rebrand(json.load(fh))
 
-        spec.setdefault("info", {})["title"] = f"{TITLES[svc]} API"
+        info = spec.setdefault("info", {})
+        info["title"] = f"{TITLES[svc]} API"
+        if svc in DESC_ZH:
+            info["description"] = DESC_ZH[svc]
+
+        short = GATEWAY_SHORT.get(svc)
+        if short:
+            base = spec.get("basePath") or ""
+            if base == "/":
+                base = ""
+            spec["host"] = GATEWAY_HOST
+            spec["schemes"] = ["https"]
+            spec["basePath"] = f"/bff/{short}{base}"
 
         dst = os.path.join(PORTAL_SPECS, f"{svc}.json")
         with open(dst, "w", encoding="utf-8", newline="") as fh:

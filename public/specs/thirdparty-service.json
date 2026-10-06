@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Third-party integration service, providing CAPTCHA and external provider integrations",
+    "description": "第三方集成服务——提供 CAPTCHA 与外部供应商集成能力。",
     "title": "第三方服务 API",
     "contact": {},
     "version": "1.0.0"

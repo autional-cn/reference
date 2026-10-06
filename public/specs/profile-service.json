@@ -6,7 +6,7 @@
     "contact": {},
     "version": "1.0.0"
   },
-  "basePath": "/api/v1",
+  "basePath": "/bff/profile/api/v1",
   "paths": {
     "/admin/profiles": {
       "get": {
@@ -5210,5 +5210,9 @@
       "description": "资料审批管理：字段变更审批流程",
       "name": "审批管理"
     }
+  ],
+  "host": "api.autional.cn",
+  "schemes": [
+    "https"
   ]
 }

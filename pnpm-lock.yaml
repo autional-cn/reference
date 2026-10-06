@@ -15,11 +15,11 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2(astro@5.18.2(@types/node@24.13.2)(jiti@1.21.7)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))(tailwindcss@3.4.19(yaml@2.9.0))
       '@autional/tailwind-preset':
-        specifier: 0.1.0-rc.4
-        version: 0.1.0-rc.4(tailwindcss@3.4.19(yaml@2.9.0))
+        specifier: 0.1.0-rc.6
+        version: 0.1.0-rc.6(tailwindcss@3.4.19(yaml@2.9.0))
       '@autional/tokens':
-        specifier: 0.1.0-rc.10
-        version: 0.1.0-rc.10
+        specifier: 0.1.0-rc.12
+        version: 0.1.0-rc.12
       astro:
         specifier: ^5.0.0
         version: 5.18.2(@types/node@24.13.2)(jiti@1.21.7)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0)
@@ -87,13 +87,13 @@ packages:
   '@astrojs/yaml2ts@0.2.4':
     resolution: {integrity: sha512-8oddpOae35pJsXPQXhTkM0ypfKPskVsh2bCxRtbf7e+/Epw2nReakFYpLKjZMEr75CsoF203PMnCocpfz0s69A==}
 
-  '@autional/tailwind-preset@0.1.0-rc.4':
-    resolution: {integrity: sha512-TC56Pu0x/HJ2Z6ZWLB6staLanTNGKjJf8hv7TsYaz6T5iikiR23bgfoDtQ4dz9ltjWdiCbLa9jQpU15N2hALBA==}
+  '@autional/tailwind-preset@0.1.0-rc.6':
+    resolution: {integrity: sha512-PvemG0xOVxdiIabpExMbcR5R9h6+I+ajvjtpt/n01ZTiwCN1LHnkf5DXMaPw9GN1a4R6jbKvhTyyf2l4bPUb4Q==}
     peerDependencies:
       tailwindcss: '>=3.0.0'
 
-  '@autional/tokens@0.1.0-rc.10':
-    resolution: {integrity: sha512-icNCmGSpYTCKnlgX9cMCC3E04dEHVWicNkEuE9TjJC3BqZgX9peVN/wYwGiM1e02fwav68gilHUmY2tQOWQwrw==}
+  '@autional/tokens@0.1.0-rc.12':
+    resolution: {integrity: sha512-bDwvI+QGwBrT+Rzf/Q9GzQK+78cexzVO1B1f79P9wlpg5TV2+xnUA7XD0Kl8qh12fXCKsfvDeVR3aNnK1rlZyw==}
 
   '@babel/helper-string-parser@7.29.7':
     resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
@@ -2419,12 +2419,12 @@ snapshots:
     dependencies:
       yaml: 2.9.0
 
-  '@autional/tailwind-preset@0.1.0-rc.4(tailwindcss@3.4.19(yaml@2.9.0))':
+  '@autional/tailwind-preset@0.1.0-rc.6(tailwindcss@3.4.19(yaml@2.9.0))':
     dependencies:
-      '@autional/tokens': 0.1.0-rc.10
+      '@autional/tokens': 0.1.0-rc.12
       tailwindcss: 3.4.19(yaml@2.9.0)
 
-  '@autional/tokens@0.1.0-rc.10': {}
+  '@autional/tokens@0.1.0-rc.12': {}
 
   '@babel/helper-string-parser@7.29.7': {}
 

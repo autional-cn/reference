@@ -9980,7 +9980,7 @@
           "type": "integer",
           "example": 13
         },
-        "live_stream_blocked_under_16": {
+        "live_stream_blocked_under16": {
           "type": "boolean",
           "example": false
         },
@@ -11232,7 +11232,7 @@
           "maximum": 120,
           "minimum": 0
         },
-        "live_stream_blocked_under_16": {
+        "live_stream_blocked_under16": {
           "type": "boolean"
         },
         "minor_data_retention_days": {
